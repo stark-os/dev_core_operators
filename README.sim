@@ -1,0 +1,78 @@
+t0c Root operators interface library
+
+l N library for giving basic operations to root types.
+
+b
+b
+
+
+
+
+t1 Overview
+
+p This library gather some bare metal tools that allows the use of \
+some operations for root types.
+
+p Of course, as it is the main goal of this library, it is completely \
+independant from any C or N resources.
+
+p Also, this main goal of this repository is to provide sources for \
+building Stark OS \lcore\lhttps://github.com/stark-os/dev/core/core\l. \
+It is not meant to be used alone.
+
+
+
+
+t1 Compatibility
+
+t2 Target
+
+l Stark OS \lcore\lhttps://github.com/stark-os/dev/core/core\l.
+
+
+t2 Build requirements
+
+l Nothing to build.
+
+
+
+
+t1 Use
+
+t2 Install
+
+l Nothing to install.
+
+
+t2 Usage
+
+l See Stark OS \lcore\lhttps://github.com/stark-os/dev/core/core\l.
+
+
+t2 Uninstall
+
+l Nothing to uninstall.
+
+
+
+
+t1 Build process
+
+l Nothing to build.
+
+
+
+b
+
+l This is it for this library,
+
+l Remember, this is FREE SOFTWARE: Please respect the work done.
+
+l Enjoy !
+
+b
+b
+
+l \iContact: \lhttps://github.com/stark-os\l\l\i
+
+l Let's Code !\arBy I.A.

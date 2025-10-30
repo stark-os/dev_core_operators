@@ -1,0 +1,41 @@
+#!/bin/bash
+
+
+
+
+# -------- DEFINITIONS --------
+
+#exit on error
+set -e
+
+#current executable directory
+CXD=$(dirname $(readlink -f $0))
+pCXD=$(dirname $CXD)
+
+#paths
+OUT=$pCXD/out
+TMP=$OUT/tmp
+
+
+
+
+
+
+# -------- PREPARE ENVIRONMENT --------
+
+#clean
+$CXD/clean
+
+#remove previous generations
+rm --recursive --force $OUT/src/
+if [[ ! -d $TMP ]]; then mkdir --parents $TMP; fi
+
+
+
+
+
+
+# -------- EXECUTION --------
+
+#gen N file with all the requirements
+$CXD/genOperators 64

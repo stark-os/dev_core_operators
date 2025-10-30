@@ -1,0 +1,102 @@
+#!/usr/bin/python3
+
+
+
+# -------- IMPORTATIONS --------
+
+#system
+import os, sys
+
+
+
+
+
+
+# -------- DECLARATIONS --------
+
+#current executable directory
+CXD = os.path.realpath(os.path.dirname(sys.argv[0]))
+pCXD     = os.path.dirname(CXD)
+
+#paths
+SRC_DIR  = pCXD + "/src"
+DST_DIR  = pCXD + "/out/src"
+DST_FILE = DST_DIR + "/operators.n"
+
+
+
+
+
+
+# -------- TOOLS --------
+
+#errors
+def err(msg, code=1):
+	print("genOperators: " + msg)
+	exit(code)
+
+
+
+
+
+
+# -------- TOOLS --------
+
+#get each file in a dir recursively
+def fse__getTree(dir, ignoreHidden=True):
+	res = []
+	for fseName in os.listdir(dir):
+
+		#hidden file
+		if ignoreHidden:
+			if fseName[0] == '.':
+				continue
+
+		#full path
+		fseFullPath = dir + '/' + fseName
+
+		#dir => add its content recursively
+		if os.path.isdir(fseFullPath):
+			res += fse__getTree(fseFullPath)
+
+		#else, simply add it
+		else:
+			res.append(fseFullPath)
+	return res
+
+def catFullTreeIntoFile(srcDir, dstFile):
+	for filePath in fse__getTree(srcDir):
+		os.system("cat " + filePath + " >> " + dstFile)
+
+
+
+
+
+
+# -------- INITIALIZATION --------
+
+#get arch type
+arch_subdir = "arch32"
+if len(sys.argv) < 2:
+	err("Missing arch type 32 or 64 as 1st argument.")
+if sys.argv[1] == "64":
+	arch_subdir = "arch64"
+elif sys.argv[1] != "32":
+	err("Invalid value \"" + sys.argv[1] + "\" given as arch type (expected \"32\" or \"64\").", 2)
+
+
+
+
+
+
+# -------- EXECUTION --------
+
+#create dst dir
+if not os.path.isdir(os.path.abspath(DST_DIR)):
+	os.makedirs(DST_DIR)
+
+#copy generic content
+catFullTreeIntoFile(SRC_DIR + "/gnc", DST_FILE)
+
+#add specific content (32/64)
+catFullTreeIntoFile(SRC_DIR + '/' + arch_subdir, DST_FILE)
