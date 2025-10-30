@@ -17,7 +17,7 @@ p Of course, as it is the main goal of this library, it is completely \
 independant from any C or N resources.
 
 p Also, this main goal of this repository is to provide sources for \
-building Stark OS \lcore\lhttps://github.com/stark-os/dev/core/core\l. \
+building Stark OS \lhttps://github.com/stark-os/dev/core/core\lcore\l. \
 It is not meant to be used alone.
 
 
@@ -27,7 +27,7 @@ t1 Compatibility
 
 t2 Target
 
-l Stark OS \lcore\lhttps://github.com/stark-os/dev/core/core\l.
+l Stark OS \lhttps://github.com/stark-os/dev/core/core\lcore\l.
 
 
 t2 Build requirements
@@ -46,7 +46,7 @@ l Nothing to install.
 
 t2 Usage
 
-l See Stark OS \lcore\lhttps://github.com/stark-os/dev/core/core\l.
+l See Stark OS \lhttps://github.com/stark-os/dev/core/core\lcore\l.
 
 
 t2 Uninstall
