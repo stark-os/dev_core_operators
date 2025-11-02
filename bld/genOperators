@@ -22,7 +22,10 @@ pCXD     = os.path.dirname(CXD)
 SRC_DIR     = pCXD + "/src"
 DST_DIR     = pCXD + "/out/src"
 DST_FILE    = DST_DIR + "/operators.n"
-DST_FILE_FP = DST_DIR + "/operators.n.cfg" #fp
+
+#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< tmp
+DST_FILE_FP__TMP_LLI = DST_DIR + "/operators.n.cfg.TMP_FOR_LLI_CPL"
+DST_FILE_FP__TMP_Z   = DST_DIR + "/operators.n.cfg.TMP_FOR_Z_CPL"
 
 
 
@@ -69,8 +72,8 @@ def catFullTreeIntoDst(srcDir):
 	for filePath in fse__getTree(srcDir):
 		os.system("cat "       + filePath + " >> " + DST_FILE)
 
-		#also store first line in fp
-		os.system("head -n 1 " + filePath + "| sed 's@{@;@' >> " + DST_FILE_FP)
+		#also store first line in fp <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< tmp
+		os.system("head -n 1 " + filePath + "| sed 's@{@;@' >> " + DST_FILE_FP__TMP_LLI)
 
 
 
@@ -104,3 +107,27 @@ catFullTreeIntoDst(SRC_DIR + "/gnc")
 
 #add specific content (32/64)
 catFullTreeIntoDst(SRC_DIR + '/' + arch_subdir)
+
+#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< tmp
+f = open(DST_FILE_FP__TMP_LLI)
+lines = f.read().split('\n')
+f.close()
+
+#make z fp from LLI fp
+z_fp = []
+for l in lines:
+	l = l.strip()
+	if len(l) == 0:
+		continue
+	tmp    = l.split(' ')
+	retTyp = tmp[0]
+	tmp    = tmp[1].split('(')
+	name   = tmp[0]
+	params = tmp[1].split(')')[0].split(',')
+	for p in range(len(params)):
+		params[p] = params[p].split(' ')[0]
+	z_fp.append('f' + name + "\t\t" + retTyp + ',' + ','.join(params))
+
+f = open(DST_FILE_FP__TMP_Z, 'w')
+f.write('\n'.join(z_fp))
+f.close()
