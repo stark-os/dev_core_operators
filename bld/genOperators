@@ -114,7 +114,7 @@ lines = f.read().split('\n')
 f.close()
 
 #make z fp from LLI fp
-z_fp = []
+z_fp = ""
 for l in lines:
 	l = l.strip()
 	if len(l) == 0:
@@ -126,8 +126,8 @@ for l in lines:
 	params = tmp[1].split(')')[0].split(',')
 	for p in range(len(params)):
 		params[p] = params[p].split(' ')[0]
-	z_fp.append('f' + name + "\t\t" + retTyp + ',' + ','.join(params))
+	z_fp += 'f' + name + "\t\t" + retTyp + ',' + ','.join(params) + '\n'
 
 f = open(DST_FILE_FP__TMP_Z, 'w')
-f.write('\n'.join(z_fp))
+f.write(z_fp)
 f.close()
