@@ -1,3 +1,3 @@
-GUboo Odor_GUboo_GUboo(GUboo a, GUboo b){
+GUbol Odor_GUbol_GUbol(GUbol a, GUbol b){
 	return a || b;
 }

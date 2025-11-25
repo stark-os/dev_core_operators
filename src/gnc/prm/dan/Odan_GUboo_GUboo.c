@@ -1,3 +1,3 @@
-GUboo Odan_GUsboo_GUboo(GUboo a, GUboo b){
+GUbol Odan_GUbol_GUbol(GUbol a, GUbol b){
 	return a && b;
 }

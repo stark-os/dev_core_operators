@@ -1,3 +1,3 @@
-GUboo Oceq_GUref_GUref(GUref a, GUref b){
+GUbol Oceq_GUref_GUref(GUref a, GUref b){
 	return a == b;
 }

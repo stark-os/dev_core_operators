@@ -37,5 +37,18 @@ if [[ ! -d $TMP ]]; then mkdir --parents $TMP; fi
 
 # -------- EXECUTION --------
 
+#arch type given as 1st param
+if [[ -z $1 ]]; then
+	echo "build: Missing <archType> as 1st argument." >&2
+	exit 1
+fi
+
+#args
+archType=$1
+if [[ $archType != '32' && $archType != '64' ]]; then
+	echo "build: Invalid <archType> given '$archType'." >&2
+	exit 1
+fi
+
 #gen N file with all the requirements
-$CXD/genOperators 64
+$CXD/genOperators $archType

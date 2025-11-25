@@ -24,8 +24,8 @@ DST_DIR     = pCXD + "/out/src"
 DST_FILE    = DST_DIR + "/operators.n"
 
 #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< tmp
-DST_FILE_FP__TMP_LLI = DST_DIR + "/operators.n.cfg.TMP_FOR_LLI_CPL"
-DST_FILE_FP__TMP_Z   = DST_DIR + "/operators.n.cfg.TMP_FOR_Z_CPL"
+DST_FILE_FP__TMP_LLI = DST_DIR + "/operators.n.cfg.TMP_C"
+DST_FILE_FP__TMP_Z   = DST_DIR + "/operators.n.cfg"
 
 
 

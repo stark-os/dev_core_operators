@@ -1,3 +1,3 @@
-GUboo Osno_GUboo(GUboo a) {
+GUbol Osno_GUbol(GUbol a) {
 	return !a;
 }
