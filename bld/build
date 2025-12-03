@@ -37,6 +37,9 @@ if [[ ! -d $TMP ]]; then mkdir --parents $TMP; fi
 
 # -------- EXECUTION --------
 
+#get into tmp dir
+cd $TMP
+
 #arch type given as 1st param
 if [[ -z $1 ]]; then
 	echo "build: Missing <archType> as 1st argument." >&2

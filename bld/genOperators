@@ -18,21 +18,52 @@ import os, sys
 CXD = os.path.realpath(os.path.dirname(sys.argv[0]))
 pCXD     = os.path.dirname(CXD)
 
+#compilers
+C_TO_ASM="gcc"
+
 #paths
-SRC_DIR     = pCXD + "/src"
-DST_DIR     = pCXD + "/out/src"
-DST_FILE    = DST_DIR + "/operators.n"
-
-#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< tmp
-DST_FILE_FP__TMP_LLI = DST_DIR + "/operators.n.cfg.TMP_C"
-DST_FILE_FP__TMP_Z   = DST_DIR + "/operators.n.cfg"
+SRC_DIR        = pCXD + "/src"
+SRC_ZROOTTYPES = SRC_DIR + "/zRootTypes.c"
+DST_DIR        = pCXD + "/out/src"
+DST_FILE_ASM   = DST_DIR + "/operators.asm"
+DST_FILE_FP    = DST_DIR + "/operators.asm.cfg"
 
 
 
 
 
 
-# -------- TOOLS --------
+# -------- STD --------
+
+#io
+def readFile(filename):
+	f = open(filename, "r")
+	res = f.read()
+	f.close()
+	return res
+
+def writeFile(filename, content):
+	f = open(filename, "w")
+	f.write(content)
+	f.close()
+
+
+
+
+
+
+# -------- OVER STD --------
+
+#small version just for our need
+def unpfxTypeName(n):
+	if n == "void":
+		return n
+	if n.startswith("GU"):
+		return n[2:]
+	elif n.startswith("GD"):
+		tmp = n.split("_GU")
+		return tmp[0][2:] + '[' + tmp[1] + ']'
+	raise ValueError("Type \"" + n + "\" not taken in charge in bld for now.")
 
 #errors
 def err(msg, code=1):
@@ -44,7 +75,7 @@ def err(msg, code=1):
 
 
 
-# -------- TOOLS --------
+# -------- FS --------
 
 #get each file in a dir recursively
 def fse__getTree(dir, ignoreHidden=True):
@@ -68,12 +99,26 @@ def fse__getTree(dir, ignoreHidden=True):
 			res.append(fseFullPath)
 	return res
 
-def catFullTreeIntoDst(srcDir):
+def catFullTree(srcDir):
+	resC  = ""
+	resFP = ""
 	for filePath in fse__getTree(srcDir):
-		os.system("cat "       + filePath + " >> " + DST_FILE)
+		cCode = readFile(filePath)
 
-		#also store first line in fp <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< tmp
-		os.system("head -n 1 " + filePath + "| sed 's@{@;@' >> " + DST_FILE_FP__TMP_LLI)
+		#1st line has all information for fp
+		tmp    = cCode.split('\n')[0].strip().split(' ')
+		retTyp = unpfxTypeName(tmp[0])
+		tmp    = ' '.join(tmp[1:]).split('(')
+		name   = tmp[0]
+		params = tmp[1].split(')')[0].split(', ')
+		for p in range(len(params)):
+			params[p] = unpfxTypeName(params[p].split(' ')[0])
+		fpLine = "rf" + name + "\t\t" + retTyp + ',' + ','.join(params) + '\n'
+
+		#add res
+		resC  += cCode
+		resFP += fpLine
+	return (resC, resFP)
 
 
 
@@ -103,41 +148,19 @@ if not os.path.isdir(os.path.abspath(DST_DIR)):
 	os.makedirs(DST_DIR)
 
 #copy generic content
-catFullTreeIntoDst(SRC_DIR + "/gnc")
+gncC, gncFP = catFullTree(SRC_DIR + "/gnc")
 
 #add specific content (32/64)
-catFullTreeIntoDst(SRC_DIR + '/' + arch_subdir)
+spcC, spcFP = catFullTree(SRC_DIR + '/' + arch_subdir)
 
-#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< tmp
-f = open(DST_FILE_FP__TMP_LLI)
-lines = f.read().split('\n')
-f.close()
+#compile C
+writeFile("tmp.c", readFile(SRC_ZROOTTYPES) + gncC + spcC)
+if os.system(C_TO_ASM + " -S tmp.c"):
+	err("Errors when compiling gathered C sources.")
 
-def unpfxTypeName(n): #small version just for our need
-	if n == "void":
-		return n
-	if n.startswith("GU"):
-		return n[2:]
-	elif n.startswith("GD"):
-		tmp = n.split("_GU")
-		return tmp[0][2:] + '[' + tmp[1] + ']'
-	raise ValueError("Type \"" + n + "\" not taken in charge in bld for now.")
+#asm res under correct name
+if os.system("mv tmp.s " + DST_FILE_ASM):
+	err("Unable to move generated ASM code tmp.s => " + DST_FILE_ASM)
 
-#make z fp from LLI fp
-z_fp = ""
-for l in lines:
-	l = l.strip()
-	if len(l) == 0:
-		continue
-	tmp    = l.split(' ')
-	retTyp = unpfxTypeName(tmp[0])
-	tmp    = ' '.join(tmp[1:]).split('(')
-	name   = tmp[0]
-	params = tmp[1].split(')')[0].split(', ')
-	for p in range(len(params)):
-		params[p] = unpfxTypeName(params[p].split(' ')[0])
-	z_fp += 'f' + name + "\t\t" + retTyp + ',' + ','.join(params) + '\n'
-
-f = open(DST_FILE_FP__TMP_Z, 'w')
-f.write(z_fp)
-f.close()
+#fp
+writeFile(DST_FILE_FP, gncFP + spcFP)
