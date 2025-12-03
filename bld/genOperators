@@ -54,17 +54,6 @@ def writeFile(filename, content):
 
 # -------- OVER STD --------
 
-#small version just for our need
-def unpfxTypeName(n):
-	if n == "void":
-		return n
-	if n.startswith("GU"):
-		return n[2:]
-	elif n.startswith("GD"):
-		tmp = n.split("_GU")
-		return tmp[0][2:] + '[' + tmp[1] + ']'
-	raise ValueError("Type \"" + n + "\" not taken in charge in bld for now.")
-
 #errors
 def err(msg, code=1):
 	print("genOperators: " + msg)
@@ -107,12 +96,12 @@ def catFullTree(srcDir):
 
 		#1st line has all information for fp
 		tmp    = cCode.split('\n')[0].strip().split(' ')
-		retTyp = unpfxTypeName(tmp[0])
+		retTyp = tmp[0]
 		tmp    = ' '.join(tmp[1:]).split('(')
 		name   = tmp[0]
 		params = tmp[1].split(')')[0].split(', ')
 		for p in range(len(params)):
-			params[p] = unpfxTypeName(params[p].split(' ')[0])
+			params[p] = params[p].split(' ')[0]
 		fpLine = "rf" + name + "\t\t" + retTyp + ',' + ','.join(params) + '\n'
 
 		#add res
